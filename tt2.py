@@ -1,38 +1,39 @@
 import math,sys
 import turtle as tt
 
-def wr_fact(lns):
-    wx,wy = -tt.getscreen().canvwidth,tt.getscreen().canvheight
-    wt = tt.clone()
-    wt.speed(0)
-    wt.ht()
-    wt.pu()
-    def writef1(i,pc='white',fs=20,ls=25):
-        wt.pencolor(pc)
-        wt.goto(wx,wy-i*ls)
-        wt.write(lns[i],font=('Courier',fs))
-    return writef1
+def ffw(lns,fs=20,ls=24):
+    tw = tt.clone()
+    tw.ht()
+    tw.pu()
+    tw.speed(0)
+    def f1(i,pc='white'):
+        tw.pencolor(pc)
+        tw.goto(tt.Screen().window_width()//-2+fs,
+                tt.Screen().window_height()//2-ls*(i+3))
+        tw.write(lns[i],font=('Courier',fs))
+    for i in range(len(lns)): f1(i,'yellow' if i<1 else 'white')
+    return f1
 
-def step_fact(lns,wtr,stp=0):
-    def stepf1(x,y):
-        nonlocal stp
-        exec('tt.'+lns[stp])
-        wtr(stp,'white')
-        stp = stp+1 if stp+1<len(lns) else 0
-        wtr(stp,'yellow')
-    return stepf1
+def ffs(lns,wr):
+    def f2(x,y):
+        exec('tt.'+lns[tt.nln])
+        wr(tt.nln,'white')
+        tt.nln = (tt.nln+1)%len(lns)
+        wr(tt.nln,'yellow')
+    return f2
 
-def main(fp1):
+def main(fp):
     tt.bgcolor('black')
     tt.pencolor('white')
     tt.shape('turtle')
+    tt.shapesize(2,2)
     tt.speed(2)
+    tt.nln = 0
 
-    plns = open(fp1).readlines()
-    wtr = wr_fact(plns)
-    for i,ln in enumerate(plns): wtr(i,'white')
-    wtr(0,'yellow')
-    fstp1 = step_fact(plns,wtr)
-    tt.onclick(fstp1)
+    plns = open(fp).readlines()
+    wtr = ffw(plns)
+    fs1 = ffs(plns,wtr)
+    tt.Screen().onclick(fs1)
+    tt.onclick(lambda x,y:[fs1(0,0) for i in range(len(plns)-tt.nln-1)])
     tt.done()
 if __name__=='__main__': main(sys.argv[1])
